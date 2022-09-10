@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     private float time;
     [SerializeField] private float scale;
 
-    private MeshRenderer meshRenderer;
+    [SerializeField] private MeshRenderer meshRenderer;
 
     private Transform player;
     public void SetPlayer( Transform player )

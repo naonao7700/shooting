@@ -109,3 +109,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0.5
+  scale: 0.001
+  meshRenderer: {fileID: 7340545240911896578}

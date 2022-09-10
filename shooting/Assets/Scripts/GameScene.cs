@@ -108,6 +108,9 @@ public class GameScene : MonoBehaviour, IGameScene
     public List<Bullet> bulletList;
 
     public GameObject bulletPrefab;
+    public GameObject enemyPrefab;
+    public Transform enemyPopPos;
+    public float popRange;
 
     // Start is called before the first frame update
     void Start()
@@ -124,18 +127,28 @@ public class GameScene : MonoBehaviour, IGameScene
     // Update is called once per frame
     void Update()
     {
-        //“–‚½‚è”»’è‚ğs‚¤
-        if( player != null )
-        {
-            for (int i = 0; i < enemyList.Count; ++i)
-            {
-                if (enemyList[i] == null) continue;
+        if (player == null) return;
 
-                if (Sphere.IsHit(player.GetSphere(), enemyList[i].GetSphere()))
-                {
-                    GameObject.Destroy(player.gameObject );
-                    break;
-                }
+        if( Input.GetKeyDown(KeyCode.X))
+        {
+            var pos = enemyPopPos.position;
+            pos.x += Random.Range(-popRange, popRange);
+            var go = GameObject.Instantiate(enemyPrefab, pos, Quaternion.identity);
+            var e = go.GetComponent<Enemy>();
+            enemyList.Add(e);
+            e.SetPlayer(player.transform);
+            e.transform.SetParent(transform);
+        }
+
+        //“–‚½‚è”»’è‚ğs‚¤
+        for (int i = 0; i < enemyList.Count; ++i)
+        {
+            if (enemyList[i] == null) continue;
+
+            if (Sphere.IsHit(player.GetSphere(), enemyList[i].GetSphere()))
+            {
+                GameObject.Destroy(player.gameObject );
+                break;
             }
         }
 
@@ -154,6 +167,7 @@ public class GameScene : MonoBehaviour, IGameScene
 
         }
 
+        bool enemyDeleteFlag = false;
         foreach ( var bullet in bulletList )
         {
             if (bullet == null) continue;
@@ -164,8 +178,13 @@ public class GameScene : MonoBehaviour, IGameScene
                 if (Sphere.IsHit(bullet.GetSphere(), enemy.GetSphere()))
                 {
                     GameObject.Destroy(enemy.gameObject);
+                    enemyDeleteFlag = true;
                 }
             }
+        }
+        if( enemyDeleteFlag )
+        {
+            enemyList = GetComponentsInChildren<Enemy>().ToList();
         }
 
 
